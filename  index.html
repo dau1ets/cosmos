@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>COSMOS Billiards Taraz</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(85, 112, 255, .35), transparent 35%),
+        radial-gradient(circle at 90% 20%, rgba(0, 255, 180, .14), transparent 30%),
+        linear-gradient(180deg, #060713 0%, #02030a 65%, #000 100%);
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, black, transparent 80%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .wrap {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 24px;
+      background: rgba(5, 7, 18, .72);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 20px 50px rgba(0,0,0,.35);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at top, #fff, #9fb2ff);
+      color: #02030a;
+      font-weight: 950;
+      box-shadow: 0 0 28px rgba(120,150,255,.5);
+    }
+
+    .brand-title {
+      font-weight: 950;
+      letter-spacing: 1px;
+      font-size: 18px;
+    }
+
+    .brand-sub {
+      color: #9da8d7;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .nav a {
+      padding: 10px 13px;
+      border-radius: 999px;
+      color: #dfe5ff;
+      background: rgba(255,255,255,.06);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .hero {
+      min-height: 620px;
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 24px;
+      align-items: center;
+      padding: 54px 0 34px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 13px;
+      border-radius: 999px;
+      background: rgba(120,150,255,.12);
+      border: 1px solid rgba(160,180,255,.22);
+      color: #bfcaff;
+      font-weight: 800;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(46px, 8vw, 96px);
+      line-height: .88;
+      letter-spacing: -4px;
+      text-transform: uppercase;
+    }
+
+    .blue {
+      color: #9fb2ff;
+      text-shadow: 0 0 34px rgba(120,150,255,.6);
+    }
+
+    .hero-text {
+      margin-top: 22px;
+      max-width: 620px;
+      color: #c8cff0;
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      min-height: 52px;
+      padding: 15px 18px;
+      border-radius: 17px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      border: 1px solid rgba(255,255,255,.12);
+      font-weight: 950;
+      transition: .2s;
+      cursor: pointer;
+    }
+
+    .btn:active {
+      transform: scale(.97);
+    }
+
+    .btn-main {
+      background: linear-gradient(135deg, #6f8cff, #b8c7ff);
+      color: #030613;
+      box-shadow: 0 0 35px rgba(120,150,255,.32);
+    }
+
+    .btn-wa {
+      background: linear-gradient(135deg, #22d060, #087f38);
+      color: white;
+    }
+
+    .btn-dark {
+      background: rgba(255,255,255,.07);
+      color: white;
+    }
+
+    .btn-ig {
+      background: linear-gradient(135deg, #c13584, #e1306c, #f56040, #ffdc80);
+      color: white;
+      box-shadow: 0 0 28px rgba(225,48,108,.28);
+    }
+
+    .btn-tt {
+      background: linear-gradient(135deg, #010101, #1a1a2e);
+      color: white;
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 0 28px rgba(0,0,0,.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-tt::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(105,201,208,.15), rgba(254,44,85,.15));
+      pointer-events: none;
+    }
+
+    .hero-card {
+      position: relative;
+      min-height: 520px;
+      border-radius: 38px;
+      padding: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.12);
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.1), rgba(255,255,255,.03)),
+        radial-gradient(circle at 50% 0%, rgba(100,125,255,.35), transparent 45%);
+      box-shadow: 0 35px 90px rgba(0,0,0,.5);
+    }
+
+    .table {
+      height: 270px;
+      border-radius: 34px;
+      background:
+        radial-gradient(circle at center, rgba(22, 175, 123, .85), rgba(5, 75, 55, .9) 60%, #01281e);
+      border: 16px solid #12131d;
+      box-shadow:
+        inset 0 0 40px rgba(0,0,0,.55),
+        0 30px 70px rgba(0,0,0,.5);
+      position: relative;
+      margin-top: 58px;
+      transform: perspective(720px) rotateX(10deg);
+    }
+
+    .ball {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 18px rgba(255,255,255,.65);
+    }
+
+    .ball.one { left: 25%; top: 34%; background: #f5c542; }
+    .ball.two { left: 52%; top: 45%; background: #fff; }
+    .ball.three { left: 67%; top: 30%; background: #1b55ff; }
+    .ball.four { left: 75%; top: 63%; background: #df243c; }
+
+    .cue {
+      position: absolute;
+      width: 260px;
+      height: 5px;
+      background: linear-gradient(90deg, #d9bd87, #6b4321);
+      border-radius: 99px;
+      right: -40px;
+      top: 160px;
+      transform: rotate(-24deg);
+      box-shadow: 0 0 22px rgba(255,255,255,.2);
+    }
+
+    .floating {
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      bottom: 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .mini-card {
+      padding: 16px;
+      border-radius: 22px;
+      background: rgba(2, 3, 10, .72);
+      border: 1px solid rgba(255,255,255,.1);
+      backdrop-filter: blur(14px);
+    }
+
+    .mini-card span {
+      color: #8fa1ff;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .mini-card b {
+      display: block;
+      margin-top: 6px;
+      font-size: 20px;
+    }
+
+    .section {
+      padding: 34px 0;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      font-size: clamp(28px, 4vw, 46px);
+      letter-spacing: -1.5px;
+    }
+
+    .section-p {
+      color: #aeb8dc;
+      max-width: 560px;
+      line-height: 1.55;
+    }
+
+    .glass {
+      border-radius: 28px;
+      background: rgba(255,255,255,.065);
+      border: 1px solid rgba(255,255,255,.1);
+      box-shadow: 0 24px 70px rgba(0,0,0,.25);
+    }
+
+    .branches {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .branch {
+      padding: 22px;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .branch.active {
+      background:
+        linear-gradient(135deg, rgba(111,140,255,.34), rgba(255,255,255,.07));
+      border-color: rgba(160,180,255,.42);
+      box-shadow: 0 0 35px rgba(111,140,255,.18);
+    }
+
+    .branch-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .branch-name {
+      font-size: 22px;
+      font-weight: 950;
+    }
+
+    .status {
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(34,208,96,.14);
+      color: #6dff9e;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .branch p {
+      color: #c8cff0;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .branch-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .small-btn {
+      padding: 11px 13px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.08);
+      font-size: 13px;
+      font-weight: 900;
+      border: 1px solid rgba(255,255,255,.1);
+    }
+
+    .menu-tabs {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      border: 0;
+      color: white;
+      padding: 13px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.09);
+      font-weight: 950;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      color: #030613;
+      background: linear-gradient(135deg, #6f8cff, #c6d2ff);
+    }
+
+    .menu-list {
+      display: none;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .menu-list.active {
+      display: grid;
+    }
+
+    .menu-item {
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      min-height: 96px;
+    }
+
+    .menu-item b {
+      font-size: 17px;
+    }
+
+    .menu-item p {
+      margin-top: 6px;
+      color: #9ea9d1;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .price {
+      color: #9fb2ff;
+      font-size: 18px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .feature {
+      padding: 18px;
+      min-height: 150px;
+    }
+
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 14px;
+    }
+
+    .feature b {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      color: #9ea9d1;
+      line-height: 1.45;
+      font-size: 13px;
+    }
+
+    .cta {
+      padding: 30px;
+      border-radius: 34px;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(111,140,255,.4), transparent 34%),
+        linear-gradient(135deg, rgba(255,255,255,.11), rgba(255,255,255,.04));
+      border: 1px solid rgba(255,255,255,.12);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .cta p {
+      margin-top: 10px;
+      color: #c8cff0;
+      line-height: 1.5;
+    }
+
+    footer {
+      padding: 30px 0 20px;
+      color: #747d9e;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    @media (max-width: 820px) {
+      .nav {
+        display: none;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding-top: 34px;
+      }
+
+      .hero-card {
+        min-height: 420px;
+      }
+
+      .table {
+        height: 215px;
+        margin-top: 38px;
+      }
+
+      .floating {
+        grid-template-columns: 1fr;
+      }
+
+      .branches,
+      .menu-list,
+      .features,
+      .cta {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        display: block;
+      }
+
+      .section-p {
+        margin-top: 8px;
+      }
+
+      h1 {
+        letter-spacing: -2px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header class="topbar">
+      <a href="#" class="brand">
+        <div class="brand-logo">8</div>
+        <div>
+          <div class="brand-title">COSMOS</div>
+          <div class="brand-sub">Billiards Taraz</div>
+        </div>
+      </a>
+
+      <nav class="nav">
+        <a href="#branches">Филиалы</a>
+        <a href="#menu">Меню</a>
+        <a href="#about">Атмосфера</a>
+        <a href="#booking">Бронь</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div>
+        <div class="badge">🪐 Новый уровень бильярда в Таразе</div>
+
+        <h1>
+          COSMOS<br>
+          <span class="blue">BILLIARDS</span>
+        </h1>
+
+        <p class="hero-text">
+          Тёмный интерьер, кибер-атмосфера, мощный вайб и два филиала.
+          Место, где можно спокойно поиграть, отдохнуть с друзьями и красиво провести вечер.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-main" href="#branches">Выбрать филиал</a>
+          <a class="btn btn-wa" href="https://wa.me/77715733386">Забронировать</a>
+          <a class="btn btn-ig" href="https://www.instagram.com/cosmos_billiardss?igsh=MTM2czFocWp0ejJ0YQ==" target="_blank">Instagram</a>
+          <a class="btn btn-tt" href="https://www.tiktok.com/@cosmos_billiards?_r=1&_t=ZS-96pV3nvmBRk" target="_blank">TikTok</a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="cue"></div>
+
+        <div class="table">
+          <div class="ball one"></div>
+          <div class="ball two"></div>
+          <div class="ball three"></div>
+          <div class="ball four"></div>
+        </div>
+
+        <div class="floating">
+          <div class="mini-card">
+            <span>РЕЖИМ</span>
+            <b>15:00–03:00</b>
+          </div>
+
+          <div class="mini-card">
+            <span>ФИЛИАЛЫ</span>
+            <b>2 точки</b>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="section-head">
+        <h2>Атмосфера</h2>
+        <p class="section-p">
+          COSMOS — это не просто бильярд. Это место с характером: тёмный стиль,
+          приятный свет, музыка и ощущение отдельного клуба.
+        </p>
+      </div>
+
+      <div class="features">
+        <div class="feature glass">
+          <div class="feature-icon">🎱</div>
+          <b>Бильярд</b>
+          <p>Столы для игры с друзьями и отдыха после дел.</p>
+        </div>
+
+        <div class="feature glass">
+          <div class="feature-icon">🪐</div>
+          <b>Кибер-вайб</b>
+          <p>Современный тёмный стиль и космическая атмосфера.</p>
+        </div>
+
+        <div class="feature glass">
+          <div class="feature-icon">🥤</div>
+          <b>Напитки</b>
+          <p>Холодные напитки, энергетики и снеки на месте.</p>
+        </div>
+
+        <div class="feature glass">
+          <div class="feature-icon">📍</div>
+          <b>2 филиала</b>
+          <p>Выбирай удобный адрес и бронируй стол заранее.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="branches">
+      <div class="section-head">
+        <h2>Филиалы</h2>
+        <p class="section-p">
+          Выбери филиал, который тебе удобнее. Оба открыты с 15:00 до 03:00.
+        </p>
+      </div>
+
+      <div class="branches">
+        <div class="branch glass active">
+          <div class="branch-top">
+            <div class="branch-name">COSMOS 1</div>
+            <div class="status">Открыт</div>
+          </div>
+
+          <p>📍 Туманбая Молдагалиева 28<br>🕒 15:00 — 03:00</p>
+
+          <div class="branch-links">
+            <a class="small-btn" href="#">2GIS</a>
+            <a class="small-btn" href="https://wa.me/77715733386">WhatsApp</a>
+          </div>
+        </div>
+
+        <div class="branch glass">
+          <div class="branch-top">
+            <div class="branch-name">COSMOS 2</div>
+            <div class="status">Открыт</div>
+          </div>
+
+          <p>📍 Мкр. Каратау 48<br>🕒 15:00 — 03:00</p>
+
+          <div class="branch-links">
+            <a class="small-btn" href="https://2gis.kz/taraz/geo/70000001114274269" target="_blank">2GIS</a>
+            <a class="small-btn" href="https://wa.me/77072681415">WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="menu">
+      <div class="section-head">
+        <h2>Меню</h2>
+        <p class="section-p">
+          Бильярд, напитки, еда и всё необходимое для отличного вечера.
+        </p>
+      </div>
+
+      <div class="menu-tabs">
+        <button class="tab active" onclick="showMenu('billiard', this)">Бильярд</button>
+        <button class="tab" onclick="showMenu('drinks', this)">Напитки</button>
+        <button class="tab" onclick="showMenu('beer', this)">Пиво</button>
+        <button class="tab" onclick="showMenu('alcohol', this)">Алкоголь</button>
+        <button class="tab" onclick="showMenu('hookah', this)">Кальян</button>
+        <button class="tab" onclick="showMenu('snacks', this)">К пиву</button>
+        <button class="tab" onclick="showMenu('fastfood', this)">Фаст-фуд</button>
+        <button class="tab" onclick="showMenu('kitchen', this)">Кухня</button>
+        <button class="tab" onclick="showMenu('tea', this)">К чаю</button>
+        <button class="tab" onclick="showMenu('misc', this)">Разное</button>
+      </div>
+
+      <!-- Бильярд -->
+      <div class="menu-list active" id="billiard">
+        <div class="menu-item glass">
+          <div>
+            <b>Общий зал</b>
+            <p>Филиал 1 · за час</p>
+          </div>
+          <div class="price">1 500 ₸</div>
+        </div>
+
+        <div class="menu-item glass">
+          <div>
+            <b>Кабинки</b>
+            <p>Филиал 1 · за час</p>
+          </div>
+          <div class="price">3 000 ₸</div>
+        </div>
+
+        <div class="menu-item glass">
+          <div>
+            <b>Общий зал</b>
+            <p>Филиал 2 · за час</p>
+          </div>
+          <div class="price">2 000 ₸</div>
+        </div>
+
+        <div class="menu-item glass">
+          <div>
+            <b>VIP-кабинки</b>
+            <p>Филиал 2 · за час</p>
+          </div>
+          <div class="price">3 500 ₸</div>
+        </div>
+      </div>
+
+      <!-- Напитки -->
+      <div class="menu-list" id="drinks">
+        <div class="menu-item glass">
+          <div><b>Coca-Cola</b><p>Газированный напиток</p></div>
+          <div class="price">800 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Dizzy</b><p>Энергетик</p></div>
+          <div class="price">800 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Fanta</b><p>Газированный напиток</p></div>
+          <div class="price">800 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Gorilla</b><p>Энергетик</p></div>
+          <div class="price">800 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Maxi Чай</b><p>Холодный чай</p></div>
+          <div class="price">800 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Pepsi</b><p>Газированный напиток</p></div>
+          <div class="price">800 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Sprite</b><p>Газированный напиток</p></div>
+          <div class="price">800 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Ychang</b><p>Бутылочный</p></div>
+          <div class="price">800 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Байкал</b><p>Газированный напиток</p></div>
+          <div class="price">800 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Боржоми</b><p>Минеральная вода</p></div>
+          <div class="price">1 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Зизи-Заги</b><p>Газированный напиток</p></div>
+          <div class="price">800 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Пико Палпи</b><p>Сок с мякотью</p></div>
+          <div class="price">1 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Сарыагаш</b><p>Минеральная вода</p></div>
+          <div class="price">500 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Сок Palma</b><p>Нектар</p></div>
+          <div class="price">1 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Сок Piko</b><p>Нектар</p></div>
+          <div class="price">1 200 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Тассай</b><p>Вода</p></div>
+          <div class="price">700 ₸</div>
+        </div>
+      </div>
+
+      <!-- Пиво -->
+      <div class="menu-list" id="beer">
+        <div class="menu-item glass">
+          <div><b>Miller</b><p>Бутылочное</p></div>
+          <div class="price">1 200 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Прага</b><p>Разливное</p></div>
+          <div class="price">700 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Немецкое</b><p>Разливное</p></div>
+          <div class="price">700 ₸</div>
+        </div>
+      </div>
+
+      <!-- Алкоголь -->
+      <div class="menu-list" id="alcohol">
+        <div class="menu-item glass">
+          <div><b>Вино</b><p></p></div>
+          <div class="price">5 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Шампанское</b><p></p></div>
+          <div class="price">5 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Коньяк</b><p></p></div>
+          <div class="price">5 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Виски Jack Daniel's</b><p></p></div>
+          <div class="price">15 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Водка Absolut 0.5</b><p></p></div>
+          <div class="price">10 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Бульбаш</b><p>Водка</p></div>
+          <div class="price">5 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Кызылжар</b><p>Водка</p></div>
+          <div class="price">5 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Архангельская</b><p>Водка</p></div>
+          <div class="price">5 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Хортица</b><p>Водка</p></div>
+          <div class="price">5 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Сигареты</b><p></p></div>
+          <div class="price">1 500 ₸</div>
+        </div>
+      </div>
+
+      <!-- Кальян -->
+      <div class="menu-list" id="hookah">
+        <div class="menu-item glass">
+          <div><b>Кальян лёгкий / средний</b><p></p></div>
+          <div class="price">5 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Кальян крепкий</b><p></p></div>
+          <div class="price">7 000 ₸</div>
+        </div>
+      </div>
+
+      <!-- К пиву -->
+      <div class="menu-list" id="snacks">
+        <div class="menu-item glass">
+          <div><b>Арахис</b><p>Солёный</p></div>
+          <div class="price">800 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Құрт</b><p>Пачка</p></div>
+          <div class="price">600 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Құрт</b><p>Штучный</p></div>
+          <div class="price">350 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Семечки</b><p></p></div>
+          <div class="price">1 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Сухарик Avertón</b><p></p></div>
+          <div class="price">1 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Сухарик Flint</b><p></p></div>
+          <div class="price">800 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Сухарик Гренки</b><p></p></div>
+          <div class="price">800 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Чечил</b><p>Сырная косичка</p></div>
+          <div class="price">1 000 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Чипсы</b><p>В ассортименте</p></div>
+          <div class="price">1 200 ₸</div>
+        </div>
+      </div>
+
+      <!-- Фаст-фуд -->
+      <div class="menu-list" id="fastfood">
+        <div class="menu-item glass">
+          <div><b>Донер куриный</b><p></p></div>
+          <div class="price">1 900 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Донер говяжий</b><p></p></div>
+          <div class="price">1 900 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Шаурма куриная</b><p></p></div>
+          <div class="price">1 200 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Шаурма говяжья</b><p></p></div>
+          <div class="price">1 200 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Чизбургер куриный</b><p></p></div>
+          <div class="price">1 600 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Чизбургер говяжий</b><p></p></div>
+          <div class="price">1 600 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Пицца Маргарита</b><p></p></div>
+          <div class="price">2 500 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Пицца Пепперони</b><p></p></div>
+          <div class="price">2 700 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Пицца Куриная</b><p></p></div>
+          <div class="price">2 700 ₸</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Пицца 4 Сезона</b><p></p></div>
+          <div class="price">2 800 ₸</div>
+        </div>
+      </div>
+
+      <!-- Кухня -->
+      <div class="menu-list" id="kitchen">
+        <div class="menu-item glass">
+          <div><b>Қуырдақ</b><p>Блюдо казахской кухни</p></div>
+          <div class="price">по цене</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Пельмени</b><p></p></div>
+          <div class="price">по цене</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Лагман</b><p></p></div>
+          <div class="price">по цене</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Бризоль</b><p></p></div>
+          <div class="price">по цене</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Рамен</b><p></p></div>
+          <div class="price">по цене</div>
+        </div>
+      </div>
+
+      <!-- К чаю -->
+      <div class="menu-list" id="tea">
+        <div class="menu-item glass">
+          <div><b>Alpen Gold</b><p>Шоколад</p></div>
+          <div class="price">по цене</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Snickers</b><p>Батончик</p></div>
+          <div class="price">по цене</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Kazakhstan</b><p>Шоколад</p></div>
+          <div class="price">по цене</div>
+        </div>
+      </div>
+
+      <!-- Разное -->
+      <div class="menu-list" id="misc">
+        <div class="menu-item glass">
+          <div><b>Зажигалка</b><p></p></div>
+          <div class="price">по цене</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Перчатка</b><p>Бильярдная</p></div>
+          <div class="price">по цене</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Orbit</b><p>Жевательная резинка</p></div>
+          <div class="price">по цене</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Карта</b><p></p></div>
+          <div class="price">по цене</div>
+        </div>
+        <div class="menu-item glass">
+          <div><b>Трубочка</b><p></p></div>
+          <div class="price">по цене</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="booking">
+      <div class="cta">
+        <div>
+          <h2>Забронировать стол</h2>
+          <p>
+            Напиши в WhatsApp, выбери филиал и время. Быстро, удобно, без лишних звонков.
+          </p>
+        </div>
+
+        <a class="btn btn-wa" href="https://wa.me/77715733386">Написать в WhatsApp</a>
+      </div>
+    </section>
+
+    <footer>
+      © 2026 COSMOS Billiards Taraz · Твоя кибер-атмосфера 🪐
+    </footer>
+
+  </div>
+
+  <script>
+    function showMenu(id, button) {
+      document.querySelectorAll('.menu-list').forEach(menu => {
+        menu.classList.remove('active');
+      });
+
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+
+      document.getElementById(id).classList.add('active');
+      button.classList.add('active');
+    }
+  </script>
+</body>
+</html>
